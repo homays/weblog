@@ -1,7 +1,10 @@
 package com.arrebol.common.util;
 
+import com.arrebol.common.exception.BaseExceptionInterface;
+import com.arrebol.common.exception.BizException;
 import lombok.Data;
 
+import javax.xml.ws.Response;
 import java.io.Serializable;
 
 /**
@@ -24,35 +27,51 @@ public class Result<T> implements Serializable {
 
     // =================================== 成功响应 ===================================
     public static <T> Result<T> success() {
-        Result<T> Result = new Result<>();
-        return Result;
+        Result<T> result = new Result<>();
+        return result;
     }
 
     public static <T> Result<T> success(T data) {
-        Result<T> Result = new Result<>();
-        Result.setData(data);
-        return Result;
+        Result<T> result = new Result<>();
+        result.setData(data);
+        return result;
     }
 
     // =================================== 失败响应 ===================================
     public static <T> Result<T> fail() {
-        Result<T> Result = new Result<>();
-        Result.setSuccess(false);
-        return Result;
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        return result;
     }
 
     public static <T> Result<T> fail(String errorMessage) {
-        Result<T> Result = new Result<>();
-        Result.setSuccess(false);
-        Result.setMessage(errorMessage);
-        return Result;
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setMessage(errorMessage);
+        return result;
     }
 
     public static <T> Result<T> fail(String errorCode, String errorMessage) {
-        Result<T> Result = new Result<>();
-        Result.setSuccess(false);
-        Result.setErrorCode(errorCode);
-        Result.setMessage(errorMessage);
-        return Result;
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setErrorCode(errorCode);
+        result.setMessage(errorMessage);
+        return result;
+    }
+
+    public static <T> Result<T> fail(BizException bizException) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setErrorCode(bizException.getErrorCode());
+        result.setMessage(bizException.getErrorMessage());
+        return result;
+    }
+
+    public static <T> Result<T> fail(BaseExceptionInterface baseExceptionInterface) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false);
+        result.setErrorCode(baseExceptionInterface.getErrorCode());
+        result.setMessage(baseExceptionInterface.getErrorMessage());
+        return result;
     }
 }
