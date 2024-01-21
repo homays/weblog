@@ -6,6 +6,7 @@ import com.arrebol.common.util.JsonUtil;
 import com.arrebol.common.util.Response;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ public class TestController {
     @PostMapping("/admin/test")
     @ApiOperationLog(description = "测试接口")
     @ApiOperation(value = "测试接口")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response test(@RequestBody @Validated UserDO user) {
         // 打印入参
         log.info(JsonUtil.toJsonString(user));
