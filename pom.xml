@@ -47,6 +47,7 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <jackson.version>2.15.2</jackson.version>
         <knife4j.version>4.3.0</knife4j.version>
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
     </properties>
 
     <!-- 统一依赖管理 -->
@@ -89,6 +90,13 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
+            </dependency>
+
+            <!-- MybatisPlus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
