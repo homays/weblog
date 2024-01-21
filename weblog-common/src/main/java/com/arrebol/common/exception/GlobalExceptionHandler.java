@@ -1,16 +1,15 @@
 package com.arrebol.common.exception;
 
 import com.arrebol.common.enums.ResponseCodeEnum;
-import com.arrebol.common.util.Result;
+import com.arrebol.common.util.Response;
+import kotlin.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 import java.util.Optional;
 
 /**
@@ -27,25 +26,25 @@ public class GlobalExceptionHandler {
      * 其他类型异常
      */
     @ExceptionHandler({ Exception.class })
-    public Result<Object> handleOtherException(HttpServletRequest request, Exception e) {
+    public Response<Object> handleOtherException(HttpServletRequest request, Exception e) {
         log.error("{} request error, ", request.getRequestURI(), e);
-        return Result.fail(ResponseCodeEnum.SYSTEM_ERROR);
+        return Response.fail(ResponseCodeEnum.SYSTEM_ERROR);
     }
 
     /**
      * 捕获自定义业务异常
      */
     @ExceptionHandler({ BizException.class })
-    public Result<Object> handleBizException(HttpServletRequest request, BizException e) {
+    public Response<Object> handleBizException(HttpServletRequest request, BizException e) {
         log.warn("{} request fail, errorCode: {}, errorMessage: {}", request.getRequestURI(), e.getErrorCode(), e.getErrorMessage());
-        return Result.fail(e);
+        return Response.fail(e);
     }
 
     /**
      * 捕获参数校验异常
      */
     @ExceptionHandler({ MethodArgumentNotValidException.class })
-    public Result<Object> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
+    public Response<Object> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
         // 参数错误异常码
         String errorCode = ResponseCodeEnum.PARAM_NOT_VALID.getErrorCode();
 
@@ -72,7 +71,7 @@ public class GlobalExceptionHandler {
 
         log.warn("{} request error, errorCode: {}, errorMessage: {}", request.getRequestURI(), errorCode, errorMessage);
 
-        return Result.fail(errorCode, errorMessage);
+        return Response.fail(errorCode, errorMessage);
     }
 
 }
