@@ -2,8 +2,8 @@ package com.arrebol.jwt.handler;
 
 import com.arrebol.common.util.Response;
 import com.arrebol.jwt.model.LoginRspVO;
-import com.arrebol.jwt.util.JwtTokenHelper;
-import com.arrebol.jwt.util.ResultUtil;
+import com.arrebol.jwt.utils.JwtTokenHelper;
+import com.arrebol.jwt.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

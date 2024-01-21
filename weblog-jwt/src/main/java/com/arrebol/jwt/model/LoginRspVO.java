@@ -5,6 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author: 犬小哈
+ * @url: www.quanxiaoha.com
+ * @date: 2023-08-24 9:43
+ * @description: 用户登录
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

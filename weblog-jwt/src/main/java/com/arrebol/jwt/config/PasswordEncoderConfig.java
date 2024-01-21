@@ -5,12 +5,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * Description
- *
- * @author Arrebol
- * @date 2024/1/21
- */
 @Component
 public class PasswordEncoderConfig {
 
@@ -22,6 +16,6 @@ public class PasswordEncoderConfig {
 
     public static void main(String[] args) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("arrebol"));
+        System.out.println(encoder.encode("quanxiaoha"));
     }
 }

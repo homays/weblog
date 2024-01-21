@@ -1,6 +1,6 @@
 package com.arrebol.jwt.config;
 
-import com.arrebol.jwt.filer.JwtAuthenticationFilter;
+import com.arrebol.jwt.filter.JwtAuthenticationFilter;
 import com.arrebol.jwt.handler.RestAuthenticationFailureHandler;
 import com.arrebol.jwt.handler.RestAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;

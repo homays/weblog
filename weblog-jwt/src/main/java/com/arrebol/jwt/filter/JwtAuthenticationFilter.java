@@ -1,9 +1,10 @@
-package com.arrebol.jwt.filer;
+package com.arrebol.jwt.filter;
 
-import com.arrebol.jwt.exception.UsernameOrPasswordNullException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.arrebol.jwt.exception.UsernameOrPasswordNullException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,13 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- * Description
- *
- * @author Arrebol
- * @date 2024/1/21
- */
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
 
     /**
      * 指定用户登录的访问地址
@@ -32,7 +28,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException, IOException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         ObjectMapper mapper = new ObjectMapper();
         // 解析提交的 JSON 数据
         JsonNode jsonNode = mapper.readTree(request.getInputStream());
@@ -41,7 +37,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
         // 判断用户名、密码是否为空
         if (Objects.isNull(usernameNode) || Objects.isNull(passwordNode)
-                || StringUtils.isBlank(usernameNode.textValue()) || StringUtils.isBlank(passwordNode.textValue())) {
+            || StringUtils.isBlank(usernameNode.textValue()) || StringUtils.isBlank(passwordNode.textValue())) {
             throw new UsernameOrPasswordNullException("用户名或密码不能为空");
         }
 

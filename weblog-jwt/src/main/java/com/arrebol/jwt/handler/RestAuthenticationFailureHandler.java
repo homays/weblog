@@ -3,7 +3,7 @@ package com.arrebol.jwt.handler;
 import com.arrebol.common.enums.ResponseCodeEnum;
 import com.arrebol.common.util.Response;
 import com.arrebol.jwt.exception.UsernameOrPasswordNullException;
-import com.arrebol.jwt.util.ResultUtil;
+import com.arrebol.jwt.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
