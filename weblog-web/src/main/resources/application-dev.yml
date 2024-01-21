@@ -13,3 +13,7 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
       connection-test-query: SELECT 1
+  security:
+    user:
+      name: admin # 登录用户名
+      password: 123456 # 登录密码

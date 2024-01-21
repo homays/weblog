@@ -29,6 +29,8 @@
         <module>weblog-admin</module>
         <!-- 通用模块 -->
         <module>weblog-common</module>
+        <!-- JWT 模块 -->
+        <module>weblog-jwt</module>
     </modules>
 
     <!-- 版本号统一管理 -->
@@ -63,6 +65,12 @@
             <dependency>
                 <groupId>com.arrebol</groupId>
                 <artifactId>weblog-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.arrebol</groupId>
+                <artifactId>weblog-jwt</artifactId>
                 <version>${revision}</version>
             </dependency>
 
