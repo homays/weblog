@@ -2,6 +2,7 @@ package com.arrebol.admin.controller;
 
 import com.arrebol.admin.model.vo.FindCategoryPageListReqVO;
 import com.arrebol.admin.model.vo.category.AddCategoryReqVO;
+import com.arrebol.admin.model.vo.category.DeleteCategoryReqVO;
 import com.arrebol.admin.service.AdminCategoryService;
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.PageResponse;
@@ -41,6 +42,20 @@ public class AdminCategoryController {
     @ApiOperationLog(description = "分类分页数据获取")
     public PageResponse findCategoryList(@RequestBody @Validated FindCategoryPageListReqVO findCategoryPageListReqVO) {
         return categoryService.findCategoryList(findCategoryPageListReqVO);
+    }
+
+    @PostMapping("/category/delete")
+    @ApiOperation(value = "删除分类")
+    @ApiOperationLog(description = "删除分类")
+    public Response deleteCategory(@RequestBody @Validated DeleteCategoryReqVO deleteCategoryReqVO) {
+        return categoryService.deleteCategory(deleteCategoryReqVO);
+    }
+
+    @PostMapping("/category/select/list")
+    @ApiOperation(value = "分类 Select 下拉列表数据获取")
+    @ApiOperationLog(description = "分类 Select 下拉列表数据获取")
+    public Response findCategorySelectList() {
+        return categoryService.findCategorySelectList();
     }
 
 }

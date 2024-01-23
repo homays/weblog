@@ -3,6 +3,8 @@ package com.arrebol.admin.service.impl;
 import com.arrebol.admin.model.vo.FindCategoryPageListReqVO;
 import com.arrebol.admin.model.vo.FindCategoryPageListRspVO;
 import com.arrebol.admin.model.vo.category.AddCategoryReqVO;
+import com.arrebol.admin.model.vo.category.DeleteCategoryReqVO;
+import com.arrebol.admin.model.vo.category.SelectRspVO;
 import com.arrebol.admin.service.AdminCategoryService;
 import com.arrebol.common.domain.dos.CategoryDO;
 import com.arrebol.common.domain.mapper.CategoryMapper;
@@ -73,5 +75,28 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
                     ).collect(Collectors.toList());
         }
         return PageResponse.success(categoryDOPage, vos);
+    }
+
+    @Override
+    public Response deleteCategory(DeleteCategoryReqVO deleteCategoryReqVO) {
+        Long id = deleteCategoryReqVO.getId();
+        categoryMapper.deleteById(id);
+        return Response.success();
+    }
+
+    @Override
+    public Response findCategorySelectList() {
+        List<CategoryDO> categoryDOS = categoryMapper.selectList(null);
+        List<SelectRspVO> selectRspVOS = null;
+        if (!CollectionUtils.isEmpty(categoryDOS)) {
+            // 将分类 ID 作为 Value 值，将分类名称作为 label 展示
+            selectRspVOS = categoryDOS.stream()
+                    .map(categoryDO -> SelectRspVO.builder()
+                            .label(categoryDO.getName())
+                            .value(categoryDO.getId())
+                            .build())
+                    .collect(Collectors.toList());
+        }
+        return Response.success(selectRspVOS);
     }
 }
