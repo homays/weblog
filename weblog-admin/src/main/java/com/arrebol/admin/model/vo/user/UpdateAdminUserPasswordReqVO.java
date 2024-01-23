@@ -1,4 +1,4 @@
-package com.arrebol.admin.model.vo;
+package com.arrebol.admin.model.vo.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

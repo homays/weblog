@@ -1,11 +1,14 @@
 package com.arrebol.admin.service.impl;
 
-import com.arrebol.admin.model.vo.UpdateAdminUserPasswordReqVO;
+import com.arrebol.admin.model.vo.user.FindUserInfoRspVO;
+import com.arrebol.admin.model.vo.user.UpdateAdminUserPasswordReqVO;
 import com.arrebol.admin.service.AdminUserService;
 import com.arrebol.common.domain.mapper.UserMapper;
 import com.arrebol.common.enums.ResponseCodeEnum;
 import com.arrebol.common.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +37,20 @@ public class AdminUserServiceImpl implements AdminUserService {
         // 拿到用户名、密码
         String username = updateAdminUserPasswordReqVO.getUsername();
         String password = updateAdminUserPasswordReqVO.getPassword();
-
         // 加密密码
         String encodePassword = passwordEncoder.encode(password);
-
         // 更新到数据库
         int count = userMapper.updatePasswordByUsername(username, encodePassword);
-
         return count == 1 ? Response.success() : Response.fail(ResponseCodeEnum.USERNAME_NOT_FOUND);
+    }
+
+    @Override
+    public Response findUserInfo() {
+        // 获取存储在 ThreadLocal 中的用户信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 拿到用户名
+        String username = authentication.getName();
+
+        return Response.success(FindUserInfoRspVO.builder().username(username).build());
     }
 }

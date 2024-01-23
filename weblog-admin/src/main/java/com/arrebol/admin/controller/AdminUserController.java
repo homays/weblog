@@ -1,6 +1,6 @@
 package com.arrebol.admin.controller;
 
-import com.arrebol.admin.model.vo.UpdateAdminUserPasswordReqVO;
+import com.arrebol.admin.model.vo.user.UpdateAdminUserPasswordReqVO;
 import com.arrebol.admin.service.AdminUserService;
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.Response;
@@ -32,5 +32,12 @@ public class AdminUserController {
     @ApiOperationLog(description = "修改用户密码")
     public Response updatePassword(@RequestBody @Validated UpdateAdminUserPasswordReqVO updateAdminUserPasswordReqVO) {
         return userService.updatePassword(updateAdminUserPasswordReqVO);
+    }
+
+    @PostMapping("/user/info")
+    @ApiOperation(value = "获取用户信息")
+    @ApiOperationLog(description = "获取用户信息")
+    public Response findUserInfo() {
+        return userService.findUserInfo();
     }
 }
