@@ -1,7 +1,7 @@
 package com.arrebol.admin.service.impl;
 
-import com.arrebol.admin.model.vo.FindCategoryPageListReqVO;
-import com.arrebol.admin.model.vo.FindCategoryPageListRspVO;
+import com.arrebol.admin.model.vo.category.FindCategoryPageListReqVO;
+import com.arrebol.admin.model.vo.category.FindCategoryPageListRspVO;
 import com.arrebol.admin.model.vo.category.AddCategoryReqVO;
 import com.arrebol.admin.model.vo.category.DeleteCategoryReqVO;
 import com.arrebol.admin.model.vo.category.SelectRspVO;

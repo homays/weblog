@@ -1,6 +1,6 @@
-package com.arrebol.admin.model.vo;
+package com.arrebol.admin.model.vo.category;
 
-import com.arrebol.admin.model.vo.category.BasePageQuery;
+import com.arrebol.common.model.BasePageQuery;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.arrebol.admin.model.vo;
+package com.arrebol.admin.model.vo.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

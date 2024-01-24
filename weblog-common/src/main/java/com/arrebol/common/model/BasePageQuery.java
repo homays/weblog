@@ -1,4 +1,4 @@
-package com.arrebol.admin.model.vo.category;
+package com.arrebol.common.model;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.arrebol.admin.controller;
 
-import com.arrebol.admin.model.vo.FindCategoryPageListReqVO;
+import com.arrebol.admin.model.vo.category.FindCategoryPageListReqVO;
 import com.arrebol.admin.model.vo.category.AddCategoryReqVO;
 import com.arrebol.admin.model.vo.category.DeleteCategoryReqVO;
 import com.arrebol.admin.service.AdminCategoryService;
