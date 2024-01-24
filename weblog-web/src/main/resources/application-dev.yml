@@ -29,3 +29,9 @@ jwt:
   tokenHeaderKey: Authorization
   # token 请求头中的 value 值前缀
   tokenPrefix: Bearer
+
+minio:
+  endpoint: http://127.0.0.1:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: weblog
