@@ -1,11 +1,9 @@
 package com.arrebol.admin.service.impl;
 
+import com.arrebol.admin.model.vo.category.SelectRspVO;
+import com.arrebol.admin.model.vo.tag.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.arrebol.admin.model.vo.tag.AddTagReqVO;
-import com.arrebol.admin.model.vo.tag.DeleteTagReqVO;
-import com.arrebol.admin.model.vo.tag.FindTagPageListReqVO;
-import com.arrebol.admin.model.vo.tag.FindTagPageListRspVO;
 import com.arrebol.admin.service.AdminTagService;
 import com.arrebol.common.domain.dos.TagDO;
 import com.arrebol.common.domain.mapper.TagMapper;
@@ -78,5 +76,23 @@ public class AdminTagServiceImpl extends ServiceImpl<TagMapper, TagDO> implement
         // 根据标签 ID 删除
         int count = tagMapper.deleteById(tagId);
         return count == 1 ? Response.success() : Response.fail(ResponseCodeEnum.TAG_NOT_EXISTED);
+    }
+
+    @Override
+    public Response searchTags(SearchTagsReqVO searchTagsReqVO) {
+        String key = searchTagsReqVO.getKey();
+        // 执行模糊查询
+        List<TagDO> tagDOS = tagMapper.selectByKey(key);
+        // do 转 vo
+        List<SelectRspVO> vos = null;
+        if (!CollectionUtils.isEmpty(tagDOS)) {
+            vos = tagDOS.stream()
+                    .map(tagDO -> SelectRspVO.builder()
+                            .label(tagDO.getName())
+                            .value(tagDO.getId())
+                            .build())
+                    .collect(Collectors.toList());
+        }
+        return Response.success(vos);
     }
 }

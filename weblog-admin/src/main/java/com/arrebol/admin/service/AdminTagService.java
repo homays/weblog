@@ -3,6 +3,7 @@ package com.arrebol.admin.service;
 import com.arrebol.admin.model.vo.tag.AddTagReqVO;
 import com.arrebol.admin.model.vo.tag.DeleteTagReqVO;
 import com.arrebol.admin.model.vo.tag.FindTagPageListReqVO;
+import com.arrebol.admin.model.vo.tag.SearchTagsReqVO;
 import com.arrebol.common.util.PageResponse;
 import com.arrebol.common.util.Response;
 
@@ -28,4 +29,11 @@ public interface AdminTagService {
      * @return
      */
     Response deleteTag(DeleteTagReqVO deleteTagReqVO);
+
+    /**
+     * 根据标签关键词模糊查询
+     * @param searchTagsReqVO
+     * @return
+     */
+    Response searchTags(SearchTagsReqVO searchTagsReqVO);
 }

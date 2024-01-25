@@ -3,6 +3,7 @@ package com.arrebol.admin.controller;
 import com.arrebol.admin.model.vo.tag.AddTagReqVO;
 import com.arrebol.admin.model.vo.tag.DeleteTagReqVO;
 import com.arrebol.admin.model.vo.tag.FindTagPageListReqVO;
+import com.arrebol.admin.model.vo.tag.SearchTagsReqVO;
 import com.arrebol.admin.service.AdminTagService;
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.PageResponse;
@@ -43,6 +44,13 @@ public class AdminTagController {
     @ApiOperationLog(description = "删除标签")
     public Response deleteTag(@RequestBody @Validated DeleteTagReqVO deleteTagReqVO) {
         return tagService.deleteTag(deleteTagReqVO);
+    }
+
+    @PostMapping("/search")
+    @ApiOperation(value = "标签模糊查询")
+    @ApiOperationLog(description = "标签模糊查询")
+    public Response searchTags(@RequestBody @Validated SearchTagsReqVO searchTagsReqVO) {
+        return tagService.searchTags(searchTagsReqVO);
     }
 
 }
