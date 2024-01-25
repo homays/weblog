@@ -27,4 +27,9 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
+    @Bean
+    public InsertBatchSqlInjector insertBatchSqlInjector() {
+        return new InsertBatchSqlInjector();
+    }
+
 }
