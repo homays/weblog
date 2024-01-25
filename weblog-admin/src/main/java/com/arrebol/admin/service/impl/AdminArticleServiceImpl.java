@@ -1,5 +1,6 @@
 package com.arrebol.admin.service.impl;
 
+import com.arrebol.admin.model.vo.article.DeleteArticleReqVO;
 import com.arrebol.admin.model.vo.article.PublishArticleReqVO;
 import com.arrebol.admin.service.AdminArticleService;
 import com.arrebol.common.domain.dos.*;
@@ -7,6 +8,7 @@ import com.arrebol.common.domain.mapper.*;
 import com.arrebol.common.enums.ResponseCodeEnum;
 import com.arrebol.common.exception.BizException;
 import com.arrebol.common.util.Response;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +86,25 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         List<String> publishTags = publishArticleReqVO.getTags();
         insertTags(articleId, publishTags);
 
+        return Response.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Response deleteArticle(DeleteArticleReqVO deleteArticleReqVO) {
+        Long articleId = deleteArticleReqVO.getId();
+        // 1. 删除文章
+        articleMapper.delete(Wrappers.lambdaQuery(ArticleDO.class)
+                .eq(ArticleDO::getId, articleId));
+        // 2. 删除文章内容
+        articleContentMapper.delete(Wrappers.lambdaQuery(ArticleContentDO.class)
+                .eq(ArticleContentDO::getArticleId, articleId));
+        // 3. 删除文章与分类关联
+        articleCategoryRelMapper.delete(Wrappers.lambdaQuery(ArticleCategoryRelDO.class)
+                .eq(ArticleCategoryRelDO::getArticleId, articleId));
+        // 4. 删除文章与标签关联
+        articleTagRelMapper.delete(Wrappers.lambdaQuery(ArticleTagRelDO.class)
+                .eq(ArticleTagRelDO::getArticleId, articleId));
         return Response.success();
     }
 

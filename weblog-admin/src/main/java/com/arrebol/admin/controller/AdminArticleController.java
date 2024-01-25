@@ -1,5 +1,6 @@
 package com.arrebol.admin.controller;
 
+import com.arrebol.admin.model.vo.article.DeleteArticleReqVO;
 import com.arrebol.admin.model.vo.article.PublishArticleReqVO;
 import com.arrebol.admin.service.AdminArticleService;
 import com.arrebol.common.util.Response;
@@ -28,6 +29,14 @@ public class AdminArticleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response publishArticle(@RequestBody @Validated PublishArticleReqVO publishArticleReqVO) {
         return articleService.publishArticle(publishArticleReqVO);
+    }
+
+    @PostMapping("/delete")
+    @ApiOperation(value = "文章删除")
+    @ApiOperationLog(description = "文章删除")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Response deleteArticle(@RequestBody @Validated DeleteArticleReqVO deleteArticleReqVO) {
+        return articleService.deleteArticle(deleteArticleReqVO);
     }
 
 }
