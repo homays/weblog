@@ -1,5 +1,6 @@
 package com.arrebol.web.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.arrebol.common.domain.dos.*;
 import com.arrebol.common.domain.mapper.*;
 import com.arrebol.common.util.PageResponse;
@@ -15,7 +16,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleDO> articleDOS = articleDOPage.getRecords();
 
         List<FindIndexArticlePageListRspVO> vos = null;
-        if (!CollectionUtils.isEmpty(articleDOS)) {
+        if (CollUtil.isNotEmpty(articleDOS)) {
             // 文章 DO 转 VO
             vos = articleDOS.stream()
                     .map(ArticleConvert.INSTANCE::convertDO2VO)

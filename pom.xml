@@ -54,6 +54,7 @@
         <jjwt.version>0.11.2</jjwt.version>
         <minio.version>8.2.1</minio.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <hutool.version>5.8.16</hutool.version>
     </properties>
 
     <!-- 统一依赖管理 -->
@@ -144,6 +145,11 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
