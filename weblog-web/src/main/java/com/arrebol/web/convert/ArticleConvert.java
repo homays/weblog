@@ -3,6 +3,7 @@ package com.arrebol.web.convert;
 import com.arrebol.common.domain.dos.ArticleDO;
 import com.arrebol.web.model.vo.archive.FindArchiveArticleRspVO;
 import com.arrebol.web.model.vo.article.FindIndexArticlePageListRspVO;
+import com.arrebol.web.model.vo.category.FindCategoryArticlePageListRspVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -32,4 +33,10 @@ public interface ArticleConvert {
     @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(bean.getCreateTime()))")
     @Mapping(target = "createMonth", expression = "java(java.time.YearMonth.from(bean.getCreateTime()))")
     FindArchiveArticleRspVO convertDO2ArchiveArticleVO(ArticleDO bean);
+
+    /**
+     * 将 DO 转换成分类文章 VO
+     */
+    @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(bean.getCreateTime()))")
+    FindCategoryArticlePageListRspVO convertDO2CategoryArticleVO(ArticleDO bean);
 }
