@@ -4,6 +4,7 @@ import com.arrebol.common.domain.dos.ArticleDO;
 import com.arrebol.web.model.vo.archive.FindArchiveArticleRspVO;
 import com.arrebol.web.model.vo.article.FindIndexArticlePageListRspVO;
 import com.arrebol.web.model.vo.category.FindCategoryArticlePageListRspVO;
+import com.arrebol.web.model.vo.tag.FindTagArticlePageListRspVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -39,4 +40,10 @@ public interface ArticleConvert {
      */
     @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(bean.getCreateTime()))")
     FindCategoryArticlePageListRspVO convertDO2CategoryArticleVO(ArticleDO bean);
+
+    /**
+     * ArticleDO -> FindTagArticlePageListRspVO
+     */
+    @Mapping(target = "createDate", expression = "java(java.time.LocalDate.from(bean.getCreateTime()))")
+    FindTagArticlePageListRspVO convertDO2TagArticleVO(ArticleDO bean);
 }
