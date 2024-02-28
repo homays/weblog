@@ -1,13 +1,16 @@
 package com.arrebol.web.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.arrebol.common.domain.dos.*;
 import com.arrebol.common.domain.mapper.*;
+import com.arrebol.common.enums.ResponseCodeEnum;
+import com.arrebol.common.exception.BizException;
 import com.arrebol.common.util.PageResponse;
 import com.arrebol.common.util.Response;
 import com.arrebol.web.convert.ArticleConvert;
-import com.arrebol.web.model.vo.article.FindIndexArticlePageListReqVO;
-import com.arrebol.web.model.vo.article.FindIndexArticlePageListRspVO;
+import com.arrebol.web.markdown.MarkdownHelper;
+import com.arrebol.web.model.vo.article.*;
 import com.arrebol.web.model.vo.category.FindCategoryListRspVO;
 import com.arrebol.web.model.vo.tag.FindTagListRspVO;
 import com.arrebol.web.service.ArticleService;
@@ -23,17 +26,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Description
- *
- * @author Arrebol
- * @date 2024/1/29
- */
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleMapper articleMapper;
+    @Autowired
+    private ArticleContentMapper articleContentMapper;
     @Autowired
     private CategoryMapper categoryMapper;
     @Autowired
@@ -124,5 +123,62 @@ public class ArticleServiceImpl implements ArticleService {
             });
         }
         return PageResponse.success(articleDOPage, vos);
+    }
+
+    @Override
+    public Response findArticleDetail(FindArticleDetailReqVO findArticleDetailReqVO) {
+        Long articleId = findArticleDetailReqVO.getArticleId();
+
+        ArticleDO articleDO = articleMapper.selectById(articleId);
+
+        if (ObjectUtil.isNull(articleDO)) {
+            throw new BizException(ResponseCodeEnum.ARTICLE_NOT_FOUND);
+        }
+        ArticleContentDO articleContentDO = articleContentMapper.selectById(articleId);
+
+        // DO 转 VO
+        FindArticleDetailRspVO vo = FindArticleDetailRspVO.builder()
+                .title(articleDO.getTitle())
+                .createTime(articleDO.getCreateTime())
+                .content(MarkdownHelper.convertMarkdown2Html(articleContentDO.getContent()))
+                .readNum(articleDO.getReadNum())
+                .build();
+
+        ArticleCategoryRelDO articleCategoryRelDO = articleCategoryRelMapper.selectOneByArticleId(articleId);
+        CategoryDO categoryDO = categoryMapper.selectById(articleCategoryRelDO.getCategoryId());
+        vo.setCategoryId(categoryDO.getId());
+        vo.setCategoryName(categoryDO.getName());
+
+        List<ArticleTagRelDO> articleTagRelDOS = articleTagRelMapper.selectByArticleId(articleId);
+        List<Long> tagIds = articleTagRelDOS.stream().map(ArticleTagRelDO::getTagId).collect(Collectors.toList());
+        List<TagDO> tagDOS = tagMapper.selectByIds(tagIds);
+
+        // 标签 DO 转 VO
+        List<FindTagListRspVO> tagVOS = tagDOS.stream()
+                .map(tagDO -> FindTagListRspVO.builder().id(tagDO.getId()).name(tagDO.getName()).build())
+                .collect(Collectors.toList());
+        vo.setTags(tagVOS);
+
+        // 上一篇
+        ArticleDO preArticleDO = articleMapper.selectPreArticle(articleId);
+        if (Objects.nonNull(preArticleDO)) {
+            FindPreNextArticleRspVO preArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(preArticleDO.getId())
+                    .articleTitle(preArticleDO.getTitle())
+                    .build();
+            vo.setPreArticle(preArticleVO);
+        }
+
+        // 下一篇
+        ArticleDO nextArticleDO = articleMapper.selectNextArticle(articleId);
+        if (Objects.nonNull(nextArticleDO)) {
+            FindPreNextArticleRspVO nextArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(nextArticleDO.getId())
+                    .articleTitle(nextArticleDO.getTitle())
+                    .build();
+            vo.setNextArticle(nextArticleVO);
+        }
+
+        return Response.success(vo);
     }
 }

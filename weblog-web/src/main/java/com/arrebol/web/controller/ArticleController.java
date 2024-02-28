@@ -2,6 +2,7 @@ package com.arrebol.web.controller;
 
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.Response;
+import com.arrebol.web.model.vo.article.FindArticleDetailReqVO;
 import com.arrebol.web.model.vo.article.FindIndexArticlePageListReqVO;
 import com.arrebol.web.service.ArticleService;
 import io.swagger.annotations.Api;
@@ -27,4 +28,10 @@ public class ArticleController {
         return articleService.findArticlePageList(findIndexArticlePageListReqVO);
     }
 
+    @PostMapping("/detail")
+    @ApiOperation(value = "获取文章详情")
+    @ApiOperationLog(description = "获取文章详情")
+    public Response findArticleDetail(@RequestBody FindArticleDetailReqVO findArticleDetailReqVO) {
+        return articleService.findArticleDetail(findArticleDetailReqVO);
+    }
 }
