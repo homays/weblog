@@ -31,4 +31,11 @@ public class AdminDashboardController {
     public Response findDashboardPublishArticleStatistics() {
         return dashboardService.findDashboardPublishArticleStatistics();
     }
+
+    @PostMapping("/pv/statistics")
+    @ApiOperation(value = "获取后台仪表盘最近一周 PV 访问量信息")
+    @ApiOperationLog(description = "获取后台仪表盘最近一周 PV 访问量信息")
+    public Response findDashboardPVStatistics() {
+        return dashboardService.findDashboardPVStatistics();
+    }
 }
