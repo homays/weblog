@@ -42,8 +42,6 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
 
     /**
      * 查询上一篇文章
-     * @param articleId
-     * @return
      */
     default ArticleDO selectPreArticle(Long articleId) {
         return selectOne(Wrappers.<ArticleDO>lambdaQuery()
@@ -54,13 +52,20 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
 
     /**
      * 查询下一篇文章
-     * @param articleId
-     * @return
      */
     default ArticleDO selectNextArticle(Long articleId) {
         return selectOne(Wrappers.<ArticleDO>lambdaQuery()
                 .orderByDesc(ArticleDO::getId) // 按文章 ID 倒序排列
                 .lt(ArticleDO::getId, articleId) // 查询比当前文章 ID 小的
                 .last("limit 1")); // 第一条记录即为下一篇文章
+    }
+
+    /**
+     * 阅读量+1
+     */
+    default int increaseReadNum(Long articleId) {
+        return update(null, Wrappers.<ArticleDO>lambdaUpdate()
+                .setSql("read_num = read_num + 1")
+                .eq(ArticleDO::getId, articleId));
     }
 }
