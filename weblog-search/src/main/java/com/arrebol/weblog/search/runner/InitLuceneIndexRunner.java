@@ -76,7 +76,7 @@ public class InitLuceneIndexRunner implements CommandLineRunner {
         });
 
         // 创建索引
-        luceneHelper.createIndex(articleIndexDir, documents);
+        luceneHelper.createIndex(ArticleIndex.NAME, documents);
 
         log.info("==> 结束初始化 Lucene 索引...");
     }

@@ -1,6 +1,9 @@
 package com.arrebol.admin.service.impl;
 
 import com.arrebol.admin.convert.ArticleDetailConvert;
+import com.arrebol.admin.event.DeleteArticleEvent;
+import com.arrebol.admin.event.PublishArticleEvent;
+import com.arrebol.admin.event.UpdateArticleEvent;
 import com.arrebol.admin.model.vo.article.*;
 import com.arrebol.admin.service.AdminArticleService;
 import com.arrebol.common.domain.dos.*;
@@ -16,6 +19,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -47,6 +51,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     private TagMapper tagMapper;
     @Autowired
     private ArticleTagRelMapper articleTagRelMapper;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -91,6 +97,9 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         List<String> publishTags = publishArticleReqVO.getTags();
         insertTags(articleId, publishTags);
 
+        // 发送文章发布事件
+        eventPublisher.publishEvent(new PublishArticleEvent(this, articleId));
+
         return Response.success();
     }
 
@@ -110,6 +119,9 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         // 4. 删除文章与标签关联
         articleTagRelMapper.delete(Wrappers.lambdaQuery(ArticleTagRelDO.class)
                 .eq(ArticleTagRelDO::getArticleId, articleId));
+
+        // 发布文章删除事件
+        eventPublisher.publishEvent(new DeleteArticleEvent(this, articleId));
         return Response.success();
     }
 
@@ -230,6 +242,9 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         articleTagRelMapper.deleteByArticleId(articleId);
         List<String> publishTags = updateArticleReqVO.getTags();
         insertTags(articleId, publishTags);
+
+        // 发布文章修改事件
+        eventPublisher.publishEvent(new UpdateArticleEvent(this, articleId));
 
         return Response.success();
     }
