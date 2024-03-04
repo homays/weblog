@@ -25,6 +25,11 @@
             <artifactId>weblog-admin</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.arrebol</groupId>
+            <artifactId>weblog-search</artifactId>
+        </dependency>
+
         <!-- Web 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

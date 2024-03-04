@@ -59,6 +59,7 @@
         <hutool.version>5.8.16</hutool.version>
         <commonmark.version>0.20.0</commonmark.version>
         <lucene.version>8.11.1</lucene.version>
+        <commons-io.version>2.11.0</commons-io.version>
     </properties>
 
     <!-- 统一依赖管理 -->
@@ -79,6 +80,12 @@
             <dependency>
                 <groupId>com.arrebol</groupId>
                 <artifactId>weblog-jwt</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.arrebol</groupId>
+                <artifactId>weblog-search</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -207,6 +214,12 @@
                 <version>${lucene.version}</version>
             </dependency>
 
+            <!-- 工具包 -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
