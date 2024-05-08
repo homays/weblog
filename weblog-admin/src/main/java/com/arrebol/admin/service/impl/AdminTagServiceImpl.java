@@ -128,4 +128,20 @@ public class AdminTagServiceImpl extends ServiceImpl<TagMapper, TagDO> implement
         }
         return Response.success(vos);
     }
+
+    @Override
+    public Response editTag(EditTagReqVO editTagReqVO) {
+        String tagName = editTagReqVO.getTagName();
+        TagDO tagDO = tagMapper.selectByName(tagName);
+        if (Objects.nonNull(tagDO)) {
+            throw new BizException(ResponseCodeEnum.TAG_EXISTED);
+        }
+        // 更新标签
+        updateById(TagDO.builder()
+                .id(editTagReqVO.getTagId())
+                .name(tagName)
+                .updateTime(LocalDateTime.now())
+                .build());
+        return Response.success();
+    }
 }

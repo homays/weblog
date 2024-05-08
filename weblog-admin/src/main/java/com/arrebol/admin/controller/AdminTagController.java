@@ -1,9 +1,6 @@
 package com.arrebol.admin.controller;
 
-import com.arrebol.admin.model.vo.tag.AddTagReqVO;
-import com.arrebol.admin.model.vo.tag.DeleteTagReqVO;
-import com.arrebol.admin.model.vo.tag.FindTagPageListReqVO;
-import com.arrebol.admin.model.vo.tag.SearchTagsReqVO;
+import com.arrebol.admin.model.vo.tag.*;
 import com.arrebol.admin.service.AdminTagService;
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.PageResponse;
@@ -37,6 +34,13 @@ public class AdminTagController {
     @ApiOperationLog(description = "标签分页数据获取")
     public PageResponse findTagPageList(@RequestBody @Validated FindTagPageListReqVO findTagPageListReqVO) {
         return tagService.findTagPageList(findTagPageListReqVO);
+    }
+
+    @PostMapping("/edit")
+    @ApiOperation(value = "编辑标签")
+    @ApiOperationLog(description = "编辑标签")
+    public Response editTag(@RequestBody @Validated EditTagReqVO editTagReqVO) {
+        return tagService.editTag(editTagReqVO);
     }
 
     @PostMapping("/delete")

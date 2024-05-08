@@ -1,6 +1,5 @@
 spring:
   profiles:
-    # ???? dev??
     active: dev
   servlet:
     multipart:
@@ -8,6 +7,5 @@ spring:
       max-request-size: 10MB # 限制整个上传请求的最大大小为 10MB。这包括所有上传文件的大小之和。如果请求总大小超过这个值，将会被拒绝。
 
 
-# ????
 logging:
   config: classpath:logback-weblog.xml

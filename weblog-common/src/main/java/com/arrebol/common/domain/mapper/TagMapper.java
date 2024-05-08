@@ -26,8 +26,6 @@ public interface TagMapper extends BaseMapper<TagDO> {
 
     /**
      * 根据标签模糊查询
-     * @param key
-     * @return
      */
     default List<TagDO> selectByKey(String key) {
         LambdaQueryWrapper<TagDO> wrapper = new LambdaQueryWrapper<>();
@@ -38,11 +36,17 @@ public interface TagMapper extends BaseMapper<TagDO> {
 
     /**
      * 根据标签 ID 批量查询
-     * @param tagIds
-     * @return
      */
     default List<TagDO> selectByIds(List<Long> tagIds) {
         return selectList(Wrappers.<TagDO>lambdaQuery()
                 .in(TagDO::getId, tagIds));
+    }
+
+    /**
+     * 根据标签名称查询标签
+     */
+    default TagDO selectByName(String name) {
+        return selectOne(Wrappers.<TagDO>lambdaQuery()
+                .eq(TagDO::getName, name));
     }
 }
