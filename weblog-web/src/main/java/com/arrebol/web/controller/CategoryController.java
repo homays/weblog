@@ -3,6 +3,7 @@ package com.arrebol.web.controller;
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.Response;
 import com.arrebol.web.model.vo.category.FindCategoryArticlePageListReqVO;
+import com.arrebol.web.model.vo.category.FindCategoryListReqVO;
 import com.arrebol.web.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,8 +32,8 @@ public class CategoryController {
     @PostMapping("/list")
     @ApiOperation(value = "前台获取分类列表")
     @ApiOperationLog(description = "前台获取分类列表")
-    public Response findCategoryList() {
-        return categoryService.findCategoryList();
+    public Response findCategoryList(@RequestBody @Validated FindCategoryListReqVO findCategoryListReqVO) {
+        return categoryService.findCategoryList(findCategoryListReqVO);
     }
 
     @PostMapping("/article/list")
