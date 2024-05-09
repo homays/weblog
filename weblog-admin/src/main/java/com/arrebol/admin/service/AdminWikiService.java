@@ -40,4 +40,9 @@ public interface AdminWikiService {
      */
     Response findWikiCatalogList(FindWikiCatalogListReqVO findWikiCatalogListReqVO);
 
+    /**
+     * 更新知识库目录
+     */
+    Response updateWikiCatalogs(UpdateWikiCatalogReqVO updateWikiCatalogReqVO);
+
 }
