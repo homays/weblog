@@ -7,4 +7,9 @@ public interface AdminStatisticsService {
      */
     void statisticsCategoryArticleTotal();
 
+    /**
+     * 统计各标签下文章总数
+     */
+    void statisticsTagArticleTotal();
+
 }

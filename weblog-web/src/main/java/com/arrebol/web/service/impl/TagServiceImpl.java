@@ -43,12 +43,21 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Response findTagList() {
+        // 查询所有标签
         List<TagDO> tagDOS = tagMapper.selectList(Wrappers.emptyWrapper());
+
+        // DO 转 VO
         List<FindTagListRspVO> vos = null;
         if (CollUtil.isNotEmpty(tagDOS)) {
-            vos = tagDOS.stream().map(item -> BeanUtil.copyProperties(item, FindTagListRspVO.class))
+            vos = tagDOS.stream()
+                    .map(tagDO -> FindTagListRspVO.builder()
+                            .id(tagDO.getId())
+                            .name(tagDO.getName())
+                            .articlesTotal(tagDO.getArticlesTotal())
+                            .build())
                     .collect(Collectors.toList());
         }
+
         return Response.success(vos);
     }
 

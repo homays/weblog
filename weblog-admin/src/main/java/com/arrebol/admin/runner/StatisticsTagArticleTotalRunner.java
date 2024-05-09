@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 
 @Component
 @Slf4j
-public class StatisticsCategoryArticleTotalRunner implements CommandLineRunner {
+public class StatisticsTagArticleTotalRunner implements CommandLineRunner {
 
     @Resource
     private AdminStatisticsService statisticsService;
@@ -18,8 +18,8 @@ public class StatisticsCategoryArticleTotalRunner implements CommandLineRunner {
     @Override
     @Async("threadPoolTaskExecutor")
     public void run(String... args) throws Exception {
-        log.info("==> 开始统计各分类下文章数量...");
-        statisticsService.statisticsCategoryArticleTotal();
-        log.info("==> 结束统计各分类下文章数量...");
+        log.info("==> 开始统计各标签下文章数量...");
+        statisticsService.statisticsTagArticleTotal();
+        log.info("==> 结束统计各标签下文章数量...");
     }
 }
