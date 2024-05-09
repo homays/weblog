@@ -2,6 +2,7 @@ package com.arrebol.admin.controller;
 
 import com.arrebol.admin.model.vo.wiki.AddWikiReqVO;
 import com.arrebol.admin.model.vo.wiki.DeleteWikiReqVO;
+import com.arrebol.admin.model.vo.wiki.FindWikiPageListReqVO;
 import com.arrebol.admin.service.AdminWikiService;
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.Response;
@@ -38,6 +39,13 @@ public class AdminWikiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response deleteWiki(@RequestBody @Validated DeleteWikiReqVO deleteWikiReqVO) {
         return wikiService.deleteWiki(deleteWikiReqVO);
+    }
+
+    @PostMapping("/list")
+    @ApiOperation(value = "查询知识库分页数据")
+    @ApiOperationLog(description = "查询知识库分页数据")
+    public Response findWikiPageList(@RequestBody @Validated FindWikiPageListReqVO findWikiPageListReqVO) {
+        return wikiService.findWikiPageList(findWikiPageListReqVO);
     }
 
 }
