@@ -38,4 +38,14 @@ public interface WikiMapper extends BaseMapper<WikiDO> {
         return selectPage(page, wrapper);
     }
 
+    /**
+     * 查询最大权重
+     */
+    default WikiDO selectMaxWeight() {
+        return selectOne(Wrappers.<WikiDO>lambdaQuery()
+                .orderByDesc(WikiDO::getWeight) // 按权重值降序排列
+                .last("LIMIT 1")); // 仅查询出一条
+    }
+
+
 }

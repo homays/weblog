@@ -3,10 +3,7 @@ package com.arrebol.admin.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.arrebol.admin.convert.WikiConvert;
-import com.arrebol.admin.model.vo.wiki.AddWikiReqVO;
-import com.arrebol.admin.model.vo.wiki.DeleteWikiReqVO;
-import com.arrebol.admin.model.vo.wiki.FindWikiPageListReqVO;
-import com.arrebol.admin.model.vo.wiki.FindWikiPageListRspVO;
+import com.arrebol.admin.model.vo.wiki.*;
 import com.arrebol.admin.service.AdminWikiService;
 import com.arrebol.common.domain.dos.ArticleDO;
 import com.arrebol.common.domain.dos.WikiCatalogDO;
@@ -120,6 +117,36 @@ public class AdminWikiServiceImpl implements AdminWikiService {
         }
 
         return PageResponse.success(wikiDOPage, vos);
+    }
+
+    @Override
+    public Response updateWikiIsTop(UpdateWikiIsTopReqVO updateWikiIsTopReqVO) {
+        Long wikiId = updateWikiIsTopReqVO.getId();
+        Boolean isTop = updateWikiIsTopReqVO.getIsTop();
+
+        // 默认权重值为 0 ，即不参与置顶
+        int weight = 0;
+        // 若设置为置顶
+        if (Boolean.TRUE.equals(isTop)) {
+            // 查询最大权重值
+            WikiDO wikiDO = wikiMapper.selectMaxWeight();
+            Integer maxWeight = wikiDO.getWeight();
+            // 最大权重值加一
+            weight = maxWeight + 1;
+        }
+
+        // 更新该知识库的权重值
+        wikiMapper.updateById(WikiDO.builder().id(wikiId).weight(weight).build());
+        return Response.success();
+    }
+
+    @Override
+    public Response updateWikiIsPublish(UpdateWikiIsPublishReqVO updateWikiIsPublishReqVO) {
+        Long wikiId = updateWikiIsPublishReqVO.getId();
+        Boolean isPublish = updateWikiIsPublishReqVO.getIsPublish();
+        // 更新发布状态
+        wikiMapper.updateById(WikiDO.builder().id(wikiId).isPublish(isPublish).build());
+        return Response.success();
     }
 
 }
