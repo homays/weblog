@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 public interface ArticleMapper extends BaseMapper<ArticleDO> {
+
     default Page<ArticleDO> selectPageList(Long current, Long size, String title, LocalDate startDate, LocalDate endDate) {
         // 分页对象(查询第几页、每页多少数据)
         Page<ArticleDO> page = new Page<>(current, size);
@@ -26,6 +27,14 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
                 .orderByDesc(ArticleDO::getCreateTime); // 按创建时间倒叙
 
         return selectPage(page, wrapper);
+    }
+
+    /**
+     * 批量更新文章
+     */
+    default int updateByIds(ArticleDO articleDO, List<Long> ids) {
+        return update(articleDO, Wrappers.<ArticleDO>lambdaUpdate()
+                .in(ArticleDO::getId, ids));
     }
 
     /**
