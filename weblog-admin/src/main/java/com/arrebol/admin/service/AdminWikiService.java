@@ -30,4 +30,9 @@ public interface AdminWikiService {
      */
     Response updateWikiIsPublish(UpdateWikiIsPublishReqVO updateWikiIsPublishReqVO);
 
+    /**
+     * 更新知识库
+     */
+    Response updateWiki(UpdateWikiReqVO updateWikiReqVO);
+
 }

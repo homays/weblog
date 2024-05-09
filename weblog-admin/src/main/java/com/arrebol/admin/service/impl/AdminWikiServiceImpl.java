@@ -149,4 +149,19 @@ public class AdminWikiServiceImpl implements AdminWikiService {
         return Response.success();
     }
 
+    @Override
+    public Response updateWiki(UpdateWikiReqVO updateWikiReqVO) {
+        // VO 转 DO
+        WikiDO wikiDO = WikiDO.builder()
+                .id(updateWikiReqVO.getId())
+                .title(updateWikiReqVO.getTitle())
+                .cover(updateWikiReqVO.getCover())
+                .summary(updateWikiReqVO.getSummary())
+                .build();
+
+        // 根据 ID 更新知识库
+        wikiMapper.updateById(wikiDO);
+        return Response.success();
+    }
+
 }
