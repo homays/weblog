@@ -16,6 +16,7 @@ import com.arrebol.web.model.vo.article.*;
 import com.arrebol.web.model.vo.category.FindCategoryListRspVO;
 import com.arrebol.web.model.vo.tag.FindTagListRspVO;
 import com.arrebol.web.service.ArticleService;
+import com.arrebol.web.utils.MarkdownStatsUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
@@ -140,13 +141,19 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BizException(ResponseCodeEnum.ARTICLE_NOT_FOUND);
         }
         ArticleContentDO articleContentDO = articleContentMapper.selectById(articleId);
+        String content = articleContentDO.getContent();
+
+        // 计算 md 正文字数
+        int totalWords = MarkdownStatsUtil.calculateWordCount(content);
 
         // DO 转 VO
         FindArticleDetailRspVO vo = FindArticleDetailRspVO.builder()
                 .title(articleDO.getTitle())
                 .createTime(articleDO.getCreateTime())
-                .content(MarkdownHelper.convertMarkdown2Html(articleContentDO.getContent()))
+                .content(MarkdownHelper.convertMarkdown2Html(content))
                 .readNum(articleDO.getReadNum())
+                .totalWords(totalWords)
+                .readTime(MarkdownStatsUtil.calculateReadingTime(totalWords))
                 .build();
 
         ArticleCategoryRelDO articleCategoryRelDO = articleCategoryRelMapper.selectOneByArticleId(articleId);
