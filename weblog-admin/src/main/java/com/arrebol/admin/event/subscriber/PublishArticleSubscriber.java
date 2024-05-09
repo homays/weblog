@@ -1,6 +1,7 @@
 package com.arrebol.admin.event.subscriber;
 
 import com.arrebol.admin.event.PublishArticleEvent;
+import com.arrebol.admin.service.AdminStatisticsService;
 import com.arrebol.common.constant.Constants;
 import com.arrebol.common.domain.dos.ArticleContentDO;
 import com.arrebol.common.domain.dos.ArticleDO;
@@ -17,16 +18,21 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 @Slf4j
 public class PublishArticleSubscriber implements ApplicationListener<PublishArticleEvent> {
 
-    @Autowired
+    @Resource
     private LuceneHelper luceneHelper;
-    @Autowired
+    @Resource
     private ArticleMapper articleMapper;
-    @Autowired
+    @Resource
     private ArticleContentMapper articleContentMapper;
+    @Resource
+    private AdminStatisticsService statisticsService;
+
 
     @Override
     @Async("threadPoolTaskExecutor")
@@ -58,5 +64,9 @@ public class PublishArticleSubscriber implements ApplicationListener<PublishArti
         long count = luceneHelper.addDocument(ArticleIndex.NAME, document);
 
         log.info("==> 添加文章对应 Lucene 文档结束，articleId: {}，受影响行数: {}", articleId, count);
+
+        // 重新统计各分类下文章总数
+        statisticsService.statisticsCategoryArticleTotal();
+        log.info("==> 重新统计各分类下文章总数");
     }
 }

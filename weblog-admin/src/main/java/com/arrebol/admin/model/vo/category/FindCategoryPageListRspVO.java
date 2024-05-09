@@ -27,4 +27,9 @@ public class FindCategoryPageListRspVO {
      */
     private LocalDateTime createTime;
 
+    /**
+     * 文章总数
+     */
+    private Integer articlesTotal;
+
 }

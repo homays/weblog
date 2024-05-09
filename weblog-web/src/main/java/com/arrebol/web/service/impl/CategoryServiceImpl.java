@@ -47,8 +47,12 @@ public class CategoryServiceImpl implements CategoryService {
         List<FindCategoryListRspVO> vos = null;
         if (CollUtil.isNotEmpty(categoryDOS)) {
             vos = categoryDOS.stream()
-                    .map(item -> BeanUtil.copyProperties(item, FindCategoryListRspVO.class)
-                            ).collect(Collectors.toList());
+                    .map(categoryDO -> FindCategoryListRspVO.builder()
+                            .id(categoryDO.getId())
+                            .name(categoryDO.getName())
+                            .articlesTotal(categoryDO.getArticlesTotal())
+                            .build())
+                    .collect(Collectors.toList());
         }
         return Response.success(vos);
     }
