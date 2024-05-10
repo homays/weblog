@@ -2,7 +2,6 @@ package com.arrebol.web.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.arrebol.admin.event.PublishArticleEvent;
 import com.arrebol.admin.event.ReadArticleEvent;
 import com.arrebol.common.domain.dos.*;
 import com.arrebol.common.domain.mapper.*;
@@ -20,10 +19,10 @@ import com.arrebol.web.utils.MarkdownStatsUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,19 +32,19 @@ import java.util.stream.Collectors;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    @Autowired
+    @Resource
     private ArticleMapper articleMapper;
-    @Autowired
+    @Resource
     private ArticleContentMapper articleContentMapper;
-    @Autowired
+    @Resource
     private CategoryMapper categoryMapper;
-    @Autowired
+    @Resource
     private ArticleCategoryRelMapper articleCategoryRelMapper;
-    @Autowired
+    @Resource
     private TagMapper tagMapper;
-    @Autowired
+    @Resource
     private ArticleTagRelMapper articleTagRelMapper;
-    @Autowired
+    @Resource
     private ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -54,7 +53,7 @@ public class ArticleServiceImpl implements ArticleService {
         Long size = findIndexArticlePageListReqVO.getSize();
 
         // 第一步：分页查询文章主体记录
-        Page<ArticleDO> articleDOPage = articleMapper.selectPageList(current, size, null, null, null);
+        Page<ArticleDO> articleDOPage = articleMapper.selectPageList(current, size, null, null, null, null);
 
         // 返回的分页数据
         List<ArticleDO> articleDOS = articleDOPage.getRecords();
@@ -63,7 +62,11 @@ public class ArticleServiceImpl implements ArticleService {
         if (CollUtil.isNotEmpty(articleDOS)) {
             // 文章 DO 转 VO
             vos = articleDOS.stream()
-                    .map(ArticleConvert.INSTANCE::convertDO2VO)
+                    .map(articleDO -> {
+                        FindIndexArticlePageListRspVO vo = ArticleConvert.INSTANCE.convertDO2VO(articleDO);
+                        vo.setIsTop(articleDO.getWeight() > 0); // 是否置顶
+                        return vo;
+                    })
                     .collect(Collectors.toList());
 
             // 拿到所有文章的 ID 集合

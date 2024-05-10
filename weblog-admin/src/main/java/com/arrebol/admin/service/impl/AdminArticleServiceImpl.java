@@ -1,5 +1,6 @@
 package com.arrebol.admin.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.arrebol.admin.convert.ArticleDetailConvert;
 import com.arrebol.admin.event.DeleteArticleEvent;
 import com.arrebol.admin.event.PublishArticleEvent;
@@ -17,41 +18,38 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * Description
- *
- * @author Arrebol
- * @date 2024/1/25
- */
+
 @Service
 @Slf4j
 public class AdminArticleServiceImpl implements AdminArticleService {
 
-    @Autowired
+    @Resource
     private ArticleMapper articleMapper;
-    @Autowired
+    @Resource
     private ArticleContentMapper articleContentMapper;
-    @Autowired
+    @Resource
     private ArticleCategoryRelMapper articleCategoryRelMapper;
-    @Autowired
+    @Resource
     private CategoryMapper categoryMapper;
-    @Autowired
+    @Resource
     private TagMapper tagMapper;
-    @Autowired
+    @Resource
     private ArticleTagRelMapper articleTagRelMapper;
-    @Autowired
+    @Resource
     private ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -133,27 +131,27 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         String title = findArticlePageListReqVO.getTitle();
         LocalDate startDate = findArticlePageListReqVO.getStartDate();
         LocalDate endDate = findArticlePageListReqVO.getEndDate();
+        Integer type = findArticlePageListReqVO.getType();
 
-        Page<ArticleDO> page = new Page<>(current, size);
-        LambdaQueryWrapper<ArticleDO> wrapper = Wrappers.lambdaQuery(ArticleDO.class)
-                .like(StringUtils.isNotBlank(title), ArticleDO::getTitle, title.trim()) // like 模块查询
-                .ge(Objects.nonNull(startDate), ArticleDO::getCreateTime, startDate) // 大于等于 startDate
-                .le(Objects.nonNull(endDate), ArticleDO::getCreateTime, endDate)  // 小于等于 endDate
-                .orderByDesc(ArticleDO::getCreateTime);// 按创建时间倒叙
-        Page<ArticleDO> articleDOPage = articleMapper.selectPage(page, wrapper);
+        // 执行分页查询
+        Page<ArticleDO> articleDOPage = articleMapper.selectPageList(current, size, title, startDate, endDate, type);
+
         List<ArticleDO> articleDOS = articleDOPage.getRecords();
+
         // DO 转 VO
         List<FindArticlePageListRspVO> vos = null;
-        if (!CollectionUtils.isEmpty(articleDOS)) {
+        if (CollUtil.isNotEmpty(articleDOS)) {
             vos = articleDOS.stream()
                     .map(articleDO -> FindArticlePageListRspVO.builder()
                             .id(articleDO.getId())
                             .title(articleDO.getTitle())
                             .cover(articleDO.getCover())
                             .createTime(articleDO.getCreateTime())
+                            .isTop(articleDO.getWeight() > 0)
                             .build())
                     .collect(Collectors.toList());
         }
+
         return PageResponse.success(articleDOPage, vos);
     }
 
@@ -245,6 +243,31 @@ public class AdminArticleServiceImpl implements AdminArticleService {
 
         // 发布文章修改事件
         eventPublisher.publishEvent(new UpdateArticleEvent(this, articleId));
+
+        return Response.success();
+    }
+
+    @Override
+    public Response updateArticleIsTop(UpdateArticleIsTopReqVO updateArticleIsTopReqVO) {
+        Long articleId = updateArticleIsTopReqVO.getId();
+        Boolean isTop = updateArticleIsTopReqVO.getIsTop();
+
+        // 默认权重为 0
+        Integer weight = 0;
+        // 若设置为置顶
+        if (isTop) {
+            // 查询出表中最大的权重值
+            ArticleDO articleDO = articleMapper.selectMaxWeight();
+            Integer maxWeight = articleDO.getWeight();
+            // 最大权重值加一
+            weight = maxWeight + 1;
+        }
+
+        // 更新该篇文章的权重值
+        articleMapper.updateById(ArticleDO.builder()
+                .id(articleId)
+                .weight(weight)
+                .build());
 
         return Response.success();
     }
