@@ -1,15 +1,15 @@
 package com.arrebol.web.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.arrebol.common.domain.dos.WikiCatalogDO;
 import com.arrebol.common.domain.dos.WikiDO;
 import com.arrebol.common.domain.mapper.WikiCatalogMapper;
 import com.arrebol.common.domain.mapper.WikiMapper;
 import com.arrebol.common.enums.WikiCatalogLevelEnum;
 import com.arrebol.common.util.Response;
-import com.arrebol.web.model.vo.wiki.FindWikiCatalogListReqVO;
-import com.arrebol.web.model.vo.wiki.FindWikiCatalogListRspVO;
-import com.arrebol.web.model.vo.wiki.FindWikiListRspVO;
+import com.arrebol.web.model.vo.article.FindPreNextArticleRspVO;
+import com.arrebol.web.model.vo.wiki.*;
 import com.arrebol.web.service.WikiService;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -104,6 +104,37 @@ public class WikiServiceImpl implements WikiService {
             });
         }
         return Response.success(vos);
+    }
+
+    @Override
+    public Response findArticlePreNext(FindWikiArticlePreNextReqVO findWikiArticlePreNextReqVO) {
+        Long wikiId = findWikiArticlePreNextReqVO.getId();
+        Long articleId = findWikiArticlePreNextReqVO.getArticleId();
+
+        FindWikiArticlePreNextRspVO vo = new FindWikiArticlePreNextRspVO();
+        WikiCatalogDO wikiCatalogDO = wikiCatalogMapper.selectByWikiIdAndArticleId(wikiId, articleId);
+
+        // 构建上一篇文章
+        WikiCatalogDO preArticle = wikiCatalogMapper.selectPreArticle(wikiId, wikiCatalogDO.getId());
+        if (ObjectUtil.isNotNull(preArticle)) {
+            FindPreNextArticleRspVO preArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(preArticle.getArticleId())
+                    .articleTitle(preArticle.getTitle())
+                    .build();
+            vo.setPreArticle(preArticleVO);
+        }
+
+        // 构建下一篇文章
+        WikiCatalogDO nextArticle = wikiCatalogMapper.selectNextArticle(wikiId, wikiCatalogDO.getId());
+        if (ObjectUtil.isNotNull(nextArticle)) {
+            FindPreNextArticleRspVO nextArticleVO = FindPreNextArticleRspVO.builder()
+                    .articleId(nextArticle.getArticleId())
+                    .articleTitle(nextArticle.getTitle())
+                    .build();
+            vo.setNextArticle(nextArticleVO);
+        }
+
+        return Response.success(vo);
     }
 
 }
