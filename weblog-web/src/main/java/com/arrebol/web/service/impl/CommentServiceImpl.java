@@ -19,10 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import toolgood.words.IllegalWordsSearch;
+import toolgood.words.IllegalWordsSearchResult;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,6 +38,9 @@ public class CommentServiceImpl implements CommentService {
     private BlogSettingsMapper blogSettingsMapper;
     @Resource
     private CommentMapper commentMapper;
+    @Resource
+    private IllegalWordsSearch wordsSearch;
+
 
     @Override
     public Response findQQUserInfo(FindQQUserInfoReqVO findQQUserInfoReqVO) {
@@ -93,7 +100,19 @@ public class CommentServiceImpl implements CommentService {
         boolean isContainSensitiveWord = false;
         // 是否开启了敏感词过滤
         if (isCommentSensiWordOpen) {
-            // todo 敏感词过滤，先空着
+            // 校验评论中是否包含敏感词
+            isContainSensitiveWord = wordsSearch.ContainsAny(content);
+
+            if (isContainSensitiveWord) {
+                // 若包含敏感词，设置状态为审核不通过
+                status = CommentStatusEnum.EXAMINE_FAILED.getCode();
+                // 匹配到的所有敏感词组
+                List<IllegalWordsSearchResult> results = wordsSearch.FindAll(content);
+                List<String> keywords = results.stream().map(result -> result.Keyword).collect(Collectors.toList());
+                // 不同过的原因
+                reason = String.format("系统自动拦截，包含敏感词：%s", keywords);
+                log.warn("此评论内容中包含敏感词: {}, content: {}", keywords, content);
+            }
         }
 
         // 构建 DO 对象
@@ -113,6 +132,13 @@ public class CommentServiceImpl implements CommentService {
 
         // 新增评论
         commentMapper.insert(commentDO);
+
+        // 给予前端对应的提示信息
+        if (isContainSensitiveWord)
+            throw new BizException(ResponseCodeEnum.COMMENT_CONTAIN_SENSITIVE_WORD);
+
+        if (Objects.equals(status, CommentStatusEnum.WAIT_EXAMINE.getCode()))
+            throw new BizException(ResponseCodeEnum.COMMENT_WAIT_EXAMINE);
 
         return Response.success();
     }

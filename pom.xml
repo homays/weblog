@@ -60,6 +60,7 @@
         <commonmark.version>0.20.0</commonmark.version>
         <lucene.version>8.11.1</lucene.version>
         <commons-io.version>2.11.0</commons-io.version>
+        <toolgood-words.version>3.1.0.1</toolgood-words.version>
     </properties>
 
     <!-- 统一依赖管理 -->
@@ -226,6 +227,14 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
+
+            <!-- 敏感词过滤 -->
+            <dependency>
+                <groupId>io.github.toolgood</groupId>
+                <artifactId>toolgood-words</artifactId>
+                <version>${toolgood-words.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
