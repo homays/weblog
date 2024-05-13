@@ -2,6 +2,7 @@ package com.arrebol.web.controller;
 
 import com.arrebol.common.aspect.ApiOperationLog;
 import com.arrebol.common.util.Response;
+import com.arrebol.web.model.vo.comment.FindCommentListReqVO;
 import com.arrebol.web.model.vo.comment.FindQQUserInfoReqVO;
 import com.arrebol.web.model.vo.comment.PublishCommentReqVO;
 import com.arrebol.web.service.CommentService;
@@ -35,5 +36,13 @@ public class CommentController {
     public Response publishComment(@RequestBody @Validated PublishCommentReqVO publishCommentReqVO) {
         return commentService.publishComment(publishCommentReqVO);
     }
+
+    @PostMapping("/list")
+    @ApiOperation(value = "获取页面所有评论")
+    @ApiOperationLog(description = "获取页面所有评论")
+    public Response findPageComments(@RequestBody FindCommentListReqVO findCommentListReqVO) {
+        return commentService.findCommentList(findCommentListReqVO);
+    }
+
 
 }
