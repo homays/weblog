@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -37,4 +39,14 @@ public class UpdateBlogSettingsReqVO {
     private String giteeHomepage;
 
     private String zhihuHomepage;
+
+    @Email(message = "邮箱格式不正确")
+    private String mail;
+
+    @NotNull(message = "请设置评论敏感词过滤是否开启")
+    private Boolean isCommentSensiWordOpen;
+
+    @NotNull(message = "请设置评论审核是否开启")
+    private Boolean isCommentExamineOpen;
+
 }

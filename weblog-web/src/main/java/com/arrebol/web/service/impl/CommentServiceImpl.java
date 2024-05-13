@@ -2,22 +2,26 @@ package com.arrebol.web.service.impl;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.arrebol.common.domain.dos.BlogSettingsDO;
+import com.arrebol.common.domain.dos.CommentDO;
+import com.arrebol.common.domain.mapper.BlogSettingsMapper;
+import com.arrebol.common.domain.mapper.CommentMapper;
+import com.arrebol.common.enums.CommentStatusEnum;
 import com.arrebol.common.enums.ResponseCodeEnum;
 import com.arrebol.common.exception.BizException;
 import com.arrebol.common.util.Response;
 import com.arrebol.web.model.vo.comment.FindQQUserInfoReqVO;
 import com.arrebol.web.model.vo.comment.FindQQUserInfoRspVO;
+import com.arrebol.web.model.vo.comment.PublishCommentReqVO;
 import com.arrebol.web.service.CommentService;
 import com.arrebol.web.utils.StringUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.Resource;
-import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -26,6 +30,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Resource
     private RestTemplate restTemplate;
+    @Resource
+    private BlogSettingsMapper blogSettingsMapper;
+    @Resource
+    private CommentMapper commentMapper;
 
     @Override
     public Response findQQUserInfo(FindQQUserInfoReqVO findQQUserInfoReqVO) {
@@ -53,5 +61,59 @@ public class CommentServiceImpl implements CommentService {
                     .build());
         }
         return Response.fail();
+    }
+
+    @Override
+    public Response publishComment(PublishCommentReqVO publishCommentReqVO) {
+        // 回复的评论 ID
+        Long replyCommentId = publishCommentReqVO.getReplyCommentId();
+        // 评论内容
+        String content = publishCommentReqVO.getContent();
+        // 昵称
+        String nickname = publishCommentReqVO.getNickname();
+
+        // 查询博客设置相关信息（约定的 ID 为 1）
+        BlogSettingsDO blogSettingsDO = blogSettingsMapper.selectById(1L);
+        // 是否开启了敏感词过滤
+        boolean isCommentSensiWordOpen = blogSettingsDO.getIsCommentSensiWordOpen();
+        // 是否开启了审核
+        boolean isCommentExamineOpen = blogSettingsDO.getIsCommentExamineOpen();
+
+        // 设置默认状态（正常）
+        Integer status = CommentStatusEnum.NORMAL.getCode();
+        // 审核不通过原因
+        String reason = "";
+
+        // 如果开启了审核, 设置状态为待审核，等待博主后台审核通过
+        if (isCommentExamineOpen) {
+            status = CommentStatusEnum.WAIT_EXAMINE.getCode();
+        }
+
+        // 评论内容是否包含敏感词
+        boolean isContainSensitiveWord = false;
+        // 是否开启了敏感词过滤
+        if (isCommentSensiWordOpen) {
+            // todo 敏感词过滤，先空着
+        }
+
+        // 构建 DO 对象
+        CommentDO commentDO = CommentDO.builder()
+                .avatar(publishCommentReqVO.getAvatar())
+                .content(content)
+                .mail(publishCommentReqVO.getMail())
+                .createTime(LocalDateTime.now())
+                .nickname(nickname)
+                .routerUrl(publishCommentReqVO.getRouterUrl())
+                .website(publishCommentReqVO.getWebsite())
+                .replyCommentId(replyCommentId)
+                .parentCommentId(publishCommentReqVO.getParentCommentId())
+                .status(status)
+                .reason(reason)
+                .build();
+
+        // 新增评论
+        commentMapper.insert(commentDO);
+
+        return Response.success();
     }
 }
