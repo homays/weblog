@@ -14,6 +14,10 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
 
+publish:
+  comment:
+    domain: http://localhost:5173/#/
+
 #=================================================================
 # minio (上传图片需要，需配置成自己的地址)
 #=================================================================

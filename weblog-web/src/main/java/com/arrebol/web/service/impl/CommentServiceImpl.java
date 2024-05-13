@@ -13,10 +13,12 @@ import com.arrebol.common.enums.ResponseCodeEnum;
 import com.arrebol.common.exception.BizException;
 import com.arrebol.common.util.Response;
 import com.arrebol.web.convert.CommentConvert;
+import com.arrebol.web.event.PublishCommentEvent;
 import com.arrebol.web.model.vo.comment.*;
 import com.arrebol.web.service.CommentService;
 import com.arrebol.web.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -43,6 +45,8 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Resource
     private IllegalWordsSearch wordsSearch;
+    @Resource
+    private ApplicationEventPublisher eventPublisher;
 
 
     @Override
@@ -135,6 +139,11 @@ public class CommentServiceImpl implements CommentService {
 
         // 新增评论
         commentMapper.insert(commentDO);
+
+        Long commentDOId = commentDO.getId();
+
+        // 发送评论发布事件
+        eventPublisher.publishEvent(new PublishCommentEvent(this, commentDOId));
 
         // 给予前端对应的提示信息
         if (isContainSensitiveWord)

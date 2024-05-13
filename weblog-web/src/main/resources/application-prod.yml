@@ -18,6 +18,10 @@ spring:
       connection-timeout: 30000 # 连接的超时时间
       connection-test-query: SELECT 1 # 用于测试连接是否可用的SQL查询
 
+publish:
+  comment:
+    domain: http://ymkx.wangqie.site/#/
+
 #=================================================================
 # log 日志
 #=================================================================
