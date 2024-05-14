@@ -1,6 +1,7 @@
 package com.arrebol.admin.service;
 
 import com.arrebol.admin.model.vo.comment.DeleteCommentReqVO;
+import com.arrebol.admin.model.vo.comment.ExamineCommentReqVO;
 import com.arrebol.admin.model.vo.comment.FindCommentPageListReqVO;
 import com.arrebol.common.util.Response;
 
@@ -15,5 +16,11 @@ public interface AdminCommentService {
      * 删除评论
      */
     Response deleteComment(DeleteCommentReqVO deleteCommentReqVO);
+
+
+    /**
+     * 评论审核
+     */
+    Response examine(ExamineCommentReqVO examineCommentReqVO);
 
 }
