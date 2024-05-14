@@ -19,6 +19,15 @@ public interface WikiCatalogMapper extends InsertBatchMapper<WikiCatalogDO> {
     }
 
     /**
+     * 根据文章id查询知识库目录
+     */
+    default WikiCatalogDO selectByArticleId(Long articleId) {
+        return selectOne(Wrappers.<WikiCatalogDO>lambdaQuery()
+                .eq(WikiCatalogDO::getArticleId, articleId)
+        );
+    }
+
+    /**
      * 删除知识库
      */
     default int deleteByWikiId(Long wikiId) {

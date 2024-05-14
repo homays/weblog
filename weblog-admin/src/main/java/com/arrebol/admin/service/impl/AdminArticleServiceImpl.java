@@ -1,6 +1,7 @@
 package com.arrebol.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.arrebol.admin.convert.ArticleDetailConvert;
 import com.arrebol.admin.event.DeleteArticleEvent;
 import com.arrebol.admin.event.PublishArticleEvent;
@@ -51,6 +52,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     private ArticleTagRelMapper articleTagRelMapper;
     @Resource
     private ApplicationEventPublisher eventPublisher;
+    @Resource
+    private WikiCatalogMapper wikiCatalogMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -105,6 +108,10 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     @Transactional(rollbackFor = Exception.class)
     public Response deleteArticle(DeleteArticleReqVO deleteArticleReqVO) {
         Long articleId = deleteArticleReqVO.getId();
+        WikiCatalogDO wikiCatalogDO = wikiCatalogMapper.selectByArticleId(articleId);
+        if (ObjectUtil.isNotNull(wikiCatalogDO)) {
+            throw new BizException(ResponseCodeEnum.ARTICLE_IS_IN_WIKI);
+        }
         // 1. 删除文章
         articleMapper.delete(Wrappers.lambdaQuery(ArticleDO.class)
                 .eq(ArticleDO::getId, articleId));

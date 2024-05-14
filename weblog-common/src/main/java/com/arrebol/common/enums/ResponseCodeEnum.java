@@ -33,6 +33,7 @@ public enum ResponseCodeEnum implements BaseExceptionInterface {
     TAG_EXISTED("20402", "该标签已存在，请勿重复添加！"),
     TAG_CAN_NOT_DELETE("20403", "该标签下包含文章，请先删除对应文章，才能删除！"),
     ARTICLE_NOT_FOUND("20501", "该文章不存在！"),
+    ARTICLE_IS_IN_WIKI("20502", "该文章在知识库中存在，请先在知识库中移除该文章！"),
     WIKI_EXISTED("20601", "该知识库已存在"),
     WIKI_NOT_FOUND("20602", "该知识库不存在"),
     NOT_QQ_NUMBER("20701", "QQ 号格式不正确"),
