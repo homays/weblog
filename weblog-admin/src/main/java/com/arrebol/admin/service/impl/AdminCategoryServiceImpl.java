@@ -1,13 +1,11 @@
 package com.arrebol.admin.service.impl;
 
-import com.arrebol.admin.model.vo.category.FindCategoryPageListReqVO;
-import com.arrebol.admin.model.vo.category.FindCategoryPageListRspVO;
-import com.arrebol.admin.model.vo.category.AddCategoryReqVO;
-import com.arrebol.admin.model.vo.category.DeleteCategoryReqVO;
-import com.arrebol.admin.model.vo.category.SelectRspVO;
+import cn.hutool.core.util.ObjectUtil;
+import com.arrebol.admin.model.vo.category.*;
 import com.arrebol.admin.service.AdminCategoryService;
 import com.arrebol.common.domain.dos.ArticleCategoryRelDO;
 import com.arrebol.common.domain.dos.CategoryDO;
+import com.arrebol.common.domain.dos.TagDO;
 import com.arrebol.common.domain.mapper.ArticleCategoryRelMapper;
 import com.arrebol.common.domain.mapper.ArticleTagRelMapper;
 import com.arrebol.common.domain.mapper.CategoryMapper;
@@ -24,16 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * Description
- *
- * @author Arrebol
- * @date 2024/1/23
- */
 @Service
 public class AdminCategoryServiceImpl implements AdminCategoryService {
 
@@ -81,6 +74,22 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
                     ).collect(Collectors.toList());
         }
         return PageResponse.success(categoryDOPage, vos);
+    }
+
+    @Override
+    public Response editCategory(EditCategoryReqVO editCategoryReqVO) {
+        String categoryName = editCategoryReqVO.getName();
+        CategoryDO categoryDO = categoryMapper.selectByName(categoryName);
+        if (ObjectUtil.isNotNull(categoryDO)) {
+            throw new BizException(ResponseCodeEnum.CATEGORY_NAME_IS_EXISTED);
+        }
+        // 更新标签
+        categoryMapper.updateById(CategoryDO.builder()
+                .id(editCategoryReqVO.getCategoryId())
+                .name(categoryName)
+                .updateTime(LocalDateTime.now())
+                .build());
+        return Response.success();
     }
 
     @Override
