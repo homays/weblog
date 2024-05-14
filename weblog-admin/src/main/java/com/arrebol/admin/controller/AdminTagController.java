@@ -8,6 +8,7 @@ import com.arrebol.common.util.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class AdminTagController {
     @PostMapping("/add")
     @ApiOperation(value = "添加标签")
     @ApiOperationLog(description = "添加标签")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response addTags(@RequestBody @Validated AddTagReqVO addTagReqVO) {
         return tagService.addTags(addTagReqVO);
     }
@@ -39,6 +41,7 @@ public class AdminTagController {
     @PostMapping("/edit")
     @ApiOperation(value = "编辑标签")
     @ApiOperationLog(description = "编辑标签")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response editTag(@RequestBody @Validated EditTagReqVO editTagReqVO) {
         return tagService.editTag(editTagReqVO);
     }
@@ -46,6 +49,7 @@ public class AdminTagController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除标签")
     @ApiOperationLog(description = "删除标签")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Response deleteTag(@RequestBody @Validated DeleteTagReqVO deleteTagReqVO) {
         return tagService.deleteTag(deleteTagReqVO);
     }
